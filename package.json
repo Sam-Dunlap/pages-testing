@@ -1,0 +1,15 @@
+{
+  "name": "rust-relay",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "rust_relay_bg.wasm",
+    "rust_relay.js",
+    "rust_relay.d.ts"
+  ],
+  "main": "rust_relay.js",
+  "types": "rust_relay.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

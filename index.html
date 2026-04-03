@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <head>
-  <script src="rust_relay.js"></script>
+  <script type="module>
+    import init from "rust_relay.js";
+    init().then(() => {
+      open_socket();
+    });
+  </script>
 </head>
+
 Hello

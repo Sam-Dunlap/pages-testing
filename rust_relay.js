@@ -1,49 +1,111 @@
-import * as importObject from './rust_relay_bg.js';
-const IMPORTS_KEY = './rust_relay_bg.js'
-;
-const CHUNK_STACK = [
-"eNp1kEtOwzAQhsd9UR5SEAjEBtFlq8ghfZIuWXABLmCcdGKFOnZkOy2VkOghOBBHwwUE3bD0zPibb37gtiQAQFrkCaAxI2fRramtYwYl37BURM/2hrF1WqiFQMUKVTiGLw6NMpgzx1OJAK020bDttpsETjuH5I3cb7cfcHwwbXZKLLXZNOBiD/L73/r5vbp13Dgv89BSvEQ4Df5MorUXbV+RfzgHZwQCtgNkS1bpQvkGvB5WRi/qDI1tdCVXouYCSevRQ+HEtzK0Fhc03TTbu0XZ9TBK5lHc64/mk2ScJGPsjeLRlMYJjSeDzppLP9aJo9EsGp7sfOiPyLmvRcPhXa+fp5N4nOWYD+CdBP4cgY7lyF1t0HbD47SWS/odSRjsPaiuXHiZcSmpRxYGM0f1Co3USoRHZS1dseKyxjAo66/MqZA65dKG50orZ3hVFUrQvHK728PAZ4IGVYbUbSq0YdcWQlGf1ydUqZ4V"
-].reverse();
+/* @ts-self-types="./rust_relay.d.ts" */
 
-async function chunkBytes(base64) {
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(base64, 'base64');
-  }
-  const res = await fetch("data:application/octet-stream;base64," + base64);
-  return res.bytes();
+function __wbg_get_imports() {
+    const import0 = {
+        __proto__: null,
+        __wbindgen_init_externref_table: function() {
+            const table = wasm.__wbindgen_externrefs;
+            const offset = table.grow(4);
+            table.set(0, undefined);
+            table.set(offset + 0, undefined);
+            table.set(offset + 1, null);
+            table.set(offset + 2, true);
+            table.set(offset + 3, false);
+        },
+    };
+    return {
+        __proto__: null,
+        "./rust_relay_bg.js": import0,
+    };
 }
 
-export const WASM_PROMISE = (async () => {
-  const compressed = new ReadableStream({
-    type: 'bytes',
-    cancel: () => {
-      CHUNK_STACK.length = 0;
-    },
-    pull: async (ctrl) => {
-      if (CHUNK_STACK.length) {
-        ctrl.enqueue(await chunkBytes(CHUNK_STACK.pop()));
-      } else {
-        ctrl.close();
-      }
-    }
-  });
-  const body = compressed.pipeThrough(new DecompressionStream('deflate'));
-  const response = new Response(body,
-  {
-    status: 200,
-      statusText: 'OK',
-        headers: {
-      'content-type': 'application/wasm'
-    }
-  });
-  const {instance} = await WebAssembly.instantiateStreaming(response, {
-    [IMPORTS_KEY]: importObject
-  });
-  importObject.__wbg_set_wasm(instance.exports);
-  instance.exports.__wbindgen_start();
-  return importObject;
-})();
-
-export function getWasm() {
-  return WASM_PROMISE;
+let wasmModule, wasm;
+function __wbg_finalize_init(instance, module) {
+    wasm = instance.exports;
+    wasmModule = module;
+    wasm.__wbindgen_start();
+    return wasm;
 }
+
+async function __wbg_load(module, imports) {
+    if (typeof Response === 'function' && module instanceof Response) {
+        if (typeof WebAssembly.instantiateStreaming === 'function') {
+            try {
+                return await WebAssembly.instantiateStreaming(module, imports);
+            } catch (e) {
+                const validResponse = module.ok && expectedResponseType(module.type);
+
+                if (validResponse && module.headers.get('Content-Type') !== 'application/wasm') {
+                    console.warn("`WebAssembly.instantiateStreaming` failed because your server does not serve Wasm with `application/wasm` MIME type. Falling back to `WebAssembly.instantiate` which is slower. Original error:\n", e);
+
+                } else { throw e; }
+            }
+        }
+
+        const bytes = await module.arrayBuffer();
+        return await WebAssembly.instantiate(bytes, imports);
+    } else {
+        const instance = await WebAssembly.instantiate(module, imports);
+
+        if (instance instanceof WebAssembly.Instance) {
+            return { instance, module };
+        } else {
+            return instance;
+        }
+    }
+
+    function expectedResponseType(type) {
+        switch (type) {
+            case 'basic': case 'cors': case 'default': return true;
+        }
+        return false;
+    }
+}
+
+function initSync(module) {
+    if (wasm !== undefined) return wasm;
+
+
+    if (module !== undefined) {
+        if (Object.getPrototypeOf(module) === Object.prototype) {
+            ({module} = module)
+        } else {
+            console.warn('using deprecated parameters for `initSync()`; pass a single object instead')
+        }
+    }
+
+    const imports = __wbg_get_imports();
+    if (!(module instanceof WebAssembly.Module)) {
+        module = new WebAssembly.Module(module);
+    }
+    const instance = new WebAssembly.Instance(module, imports);
+    return __wbg_finalize_init(instance, module);
+}
+
+async function __wbg_init(module_or_path) {
+    if (wasm !== undefined) return wasm;
+
+
+    if (module_or_path !== undefined) {
+        if (Object.getPrototypeOf(module_or_path) === Object.prototype) {
+            ({module_or_path} = module_or_path)
+        } else {
+            console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+        }
+    }
+
+    if (module_or_path === undefined) {
+        module_or_path = new URL('rust_relay_bg.wasm', import.meta.url);
+    }
+    const imports = __wbg_get_imports();
+
+    if (typeof module_or_path === 'string' || (typeof Request === 'function' && module_or_path instanceof Request) || (typeof URL === 'function' && module_or_path instanceof URL)) {
+        module_or_path = fetch(module_or_path);
+    }
+
+    const { instance, module } = await __wbg_load(await module_or_path, imports);
+
+    return __wbg_finalize_init(instance, module);
+}
+
+export { initSync, __wbg_init as default };

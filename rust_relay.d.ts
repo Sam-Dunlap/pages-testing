@@ -1,14 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export function open_socket(): void;
+export function open_socket(): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly open_socket: () => void;
+    readonly open_socket: () => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
+    readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_start: () => void;
 }
 

@@ -1,5 +1,9 @@
 /* @ts-self-types="./rust_relay.d.ts" */
 
+export function open_socket() {
+    wasm.open_socket();
+}
+
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
